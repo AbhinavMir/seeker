@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Search ChatGPT Conversations</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        #results {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #results li {
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 20px;
+        }
+
+        #results li:last-child {
+            border-bottom: none;
+        }
+
+        .url {
+            color: green;
+        }
+
+        .timestamp {
+            color: #888;
+        }
+
+        .highlight {
+            background-color: yellow;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Search ChatGPT Conversations</h1>
+    <input type="text" id="searchInput" placeholder="Enter search terms...">
+    <ul id="results"></ul>
+    <script src="search.js"></script>
+</body>
+
+</html>
