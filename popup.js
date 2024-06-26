@@ -9,23 +9,18 @@ document.addEventListener('DOMContentLoaded', function () {
     savedConversationsLink.addEventListener('click', openSavedConversations);
 
     function extractConversation() {
-        chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-            const tab = tabs[0];
-            if (tab.url.startsWith("https://chat.openai.com/") || tab.url.startsWith("https://chatgpt.com/")) {
-                chrome.scripting.executeScript({
-                    target: { tabId: tab.id },
-                    function: () => {
-                        // ... (keep the existing extractConversation function)
-                    }
-                }, (results) => {
-                    if (chrome.runtime.lastError) {
-                        console.error('Error:', chrome.runtime.lastError.message);
-                    } else if (results && results[0] && results[0].result) {
-                        saveConversation(results[0].result);
-                    }
-                });
-            } else {
-                alert('Please navigate to https://chatgpt.com/ or https://chat.openai.com/ to use this extension');
+        chrome.runtime.sendMessage({ action: "extractConversation" }, function (response) {
+            if (chrome.runtime.lastError) {
+                console.error('Error:', chrome.runtime.lastError.message);
+                showErrorMessage('Error extracting conversation. Please make sure you are on a ChatGPT page.');
+            } else if (response) {
+                if (response.error) {
+                    console.error('Extraction error:', response.error);
+                    showErrorMessage(response.error);
+                } else {
+                    console.log('Extracted conversation:', response);
+                    saveConversation(response);
+                }
             }
         });
     }
@@ -40,10 +35,27 @@ document.addEventListener('DOMContentLoaded', function () {
                 messages: conversation.messages
             });
             chrome.storage.local.set({ conversations: conversations }, function () {
-                console.log('Conversation saved');
-                alert('Conversation extracted and saved successfully!');
+                console.log('Conversation saved:', conversation);
+                showSuccessMessage('Conversation extracted and saved successfully!');
             });
         });
+    }
+
+    function showSuccessMessage(message) {
+        showMessage(message, 'green');
+    }
+
+    function showErrorMessage(message) {
+        showMessage(message, 'red');
+    }
+
+    function showMessage(message, color) {
+        const messageDiv = document.createElement('div');
+        messageDiv.textContent = message;
+        messageDiv.style.color = color;
+        messageDiv.style.marginTop = '10px';
+        document.querySelector('.container').appendChild(messageDiv);
+        setTimeout(() => messageDiv.remove(), 3000);
     }
 
     function performSearch() {

@@ -29,12 +29,13 @@ function extractConversation() {
     return conversation;
 }
 
-// Listen for messages from the popup
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.action === "getConversation") {
-        const conversation = extractConversation();
-        sendResponse(conversation);
+    if (request.action === "checkContentScript") {
+        sendResponse({ status: "ready" });
+    } else if (request.action === "extractConversation") {
+        sendResponse(extractConversation());
     }
+    return true;
 });
 
 console.log("ChatGPT Extractor content script loaded");

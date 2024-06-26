@@ -8,19 +8,25 @@
         "storage",
         "scripting"
     ],
+    "host_permissions": [
+        "https://chat.openai.com/*",
+        "https://chatgpt.com/*"
+    ],
     "action": {
         "default_popup": "popup.html"
     },
     "background": {
-        "service_worker": "background.js"
+        "service_worker": "background.js",
+        "type": "module"
     },
-    "web_accessible_resources": [
+    "content_scripts": [
         {
-            "resources": [
-                "saved_conversations.html"
-            ],
             "matches": [
-                "<all_urls>"
+                "https://chat.openai.com/*",
+                "https://chatgpt.com/*"
+            ],
+            "js": [
+                "content.js"
             ]
         }
     ]
